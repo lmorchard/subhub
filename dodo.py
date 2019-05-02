@@ -206,7 +206,7 @@ def task_package():
                 f'setup:{svc}',
             ],
             'actions': [
-                f'cd services/{svc} && env {envs()} {sls} package -v',
+                f'cd services/{svc} && env {envs()} {sls} package --stage {CFG.APP_DEPENV} -v',
             ],
         }
 
