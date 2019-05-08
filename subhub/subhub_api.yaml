@@ -73,19 +73,10 @@ paths:
           schema:
             $ref: '#/definitions/Errormessage'
       parameters:
-        - $ref: '#/parameters/uidParam'
         - in: body
           name: data
           schema:
             type: object
-            required:
-              - pmt_token
-            properties:
-              pmt_token:
-                type: string
-                description: Pay Token.
-                example: tok_KPte7942xySKBKyrBu11yEpf
-
   /customer/{uid}/subscriptions:
     get:
       operationId: subhub.api.payments.subscription_status

@@ -43,7 +43,7 @@ def webhook_auth(api_token, required_scopes=None):
 
 def get_webhook_values():
     if CFG('AWS_EXECUTION_ENV', None) is None:
-        secret_values = CFG.SUPPORT_API_KEY
+        secret_values = CFG.WEBHOOK_API_KEY
     else:  # pragma: no cover
         subhub_values = get_secret('dev/SUBHUB')
         secret_values = subhub_values['webhook_api_key']
