@@ -1,18 +1,22 @@
 import json
-from flask import g, app
+from flask import request, Response
 import sys
+import logging
 
 from subhub.api.webhooks.stripeWebhookPipeline import StripeWebhookPipeline
 
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
-@app.route("/stripe/webhook")
-def webhookView(request):
+
+def webhook_view() -> tuple:
    try:
-      event_json = json.loads(request.body)
+      event_json = json.loads(request.data)
       p = StripeWebhookPipeline(event_json)
       p.run()
    except:
-      print("Oops! ", sys.exc_info()[0], " occurred.")
-      return "Error"
+      error = sys.exc_info()[0]
+      logger.error("Oops!", error, "occured.")
+      return Response(error, status=500)
 
-   return "success"
+   return Response("Success", status=200)

@@ -21,6 +21,13 @@ securityDefinitions:
       An example of the Authorization header would be:
       ```Authorization: Bearer 00secret00```
     x-apikeyInfoFunc: subhub.auth_validation.payment_auth
+  WebhookApiKey:
+    type: apiKey
+    in: header
+    name: Authorization
+    description: |
+      Webhook validation
+    x-apikeyInfoFunc: subhub.auth_validation.webhook_auth
   SupportApiKey:
     type: apiKey
     in: header
@@ -42,6 +49,43 @@ parameters:
     required: true
     description: Subscription ID
 paths:
+  /webhooks:
+    post:
+      operationId: subhub.api.webhooks.stripeWebhookController.webhook_view
+      tags:
+        - Webhooks
+      summary: Receives webhook calls
+      description: Receives webhook calls
+      security:
+        - WebhookApiKey: []
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Webhook call received successfully.
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        500:
+          description: Error - unable to receive webhook.
+          schema:
+            $ref: '#/definitions/Errormessage'
+      parameters:
+        - $ref: '#/parameters/uidParam'
+        - in: body
+          name: data
+          schema:
+            type: object
+            required:
+              - pmt_token
+            properties:
+              pmt_token:
+                type: string
+                description: Pay Token.
+                example: tok_KPte7942xySKBKyrBu11yEpf
+
   /customer/{uid}/subscriptions:
     get:
       operationId: subhub.api.payments.subscription_status
