@@ -48,5 +48,5 @@ class StripeWebhookPipeline :
         elif type == "charge.expired":
             StripeChargeExpiredProcessor(self.payload).run()
         else:
-            raise ValueError(str(type) + " is not yet supported.")
+            raise ValueError(str(type) + " is not supported")
 
