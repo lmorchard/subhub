@@ -5,3 +5,4 @@ class StripeChargeCapturedProcessor(AbstractStripeWebhookProcessor):
 
     def run(self):
         print(self.payload)
+

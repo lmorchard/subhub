@@ -4,4 +4,5 @@ from subhub.api.webhooks.abstractStripeWebhookProcessor import AbstractStripeWeb
 class StripeChargeSucceededProcessor(AbstractStripeWebhookProcessor):
 
     def run(self):
-        print(self.payload)
+        salesforce_payload = self.payload
+        self.send_to_salesforce(salesforce_payload)
