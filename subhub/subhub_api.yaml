@@ -56,8 +56,6 @@ paths:
         - Webhooks
       summary: Receives webhook calls
       description: Receives webhook calls
-      security:
-        - WebhookApiKey: []
       produces:
         - application/json
       responses:
@@ -358,4 +356,3 @@ definitions:
       code:
         type: number
         example: 404
-

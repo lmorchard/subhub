@@ -11,6 +11,9 @@ class AbstractStripeWebhookProcessor(ABC):
         print("\n sending to salesforce : \n" +
                            str(payload))
 
+    def unhandled_event(self, payload):
+       print(f"Event not handled: {payload}")
+
     @abstractmethod
     def run(self):
         pass

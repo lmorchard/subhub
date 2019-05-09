@@ -11,6 +11,7 @@ from subhub.api.webhooks.stripeChargeRefundUpdatedProcessor import StripeChargeR
 from subhub.api.webhooks.stripeChargeRefundedProcessor import StripeChargeRefundedProcessor
 from subhub.api.webhooks.stripeChargeSucceededProcessor import StripeChargeSucceededProcessor
 from subhub.api.webhooks.stripeChargeUpdatedProcessor import StripeChargeUpdatedProcessor
+from subhub.api.webhooks.stripe_unhandled_event import StripeUnhandledEvent
 
 
 class StripeWebhookPipeline :
@@ -48,5 +49,4 @@ class StripeWebhookPipeline :
         elif type == "charge.expired":
             StripeChargeExpiredProcessor(self.payload).run()
         else:
-            raise ValueError(str(type) + " is not supported")
-
+            StripeUnhandledEvent(self.payload).run()
