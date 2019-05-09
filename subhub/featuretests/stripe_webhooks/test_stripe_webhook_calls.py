@@ -8,6 +8,7 @@ from subhub.secrets import get_secret
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
+
 def test_stripe_webhook_charge_captured():
     runTest("charge.captured.json")
 
