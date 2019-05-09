@@ -1,10 +1,9 @@
 pytest
 pytest-cov
-pytest-watch
-patch
-mock
-flake8
-moto
-stripe
-connexion
-psutil
+Quart
+Hypercorn
+Flask
+gunicorn
+attrdict
+ruamel.yaml
+mockito
