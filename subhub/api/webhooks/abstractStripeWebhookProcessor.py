@@ -8,13 +8,11 @@ from subhub.secrets import get_secret
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-
 class AbstractStripeWebhookProcessor(ABC):
 
     def __init__(self, payload):
         assert isinstance(payload, object)
         self.payload = payload
-
 
     def get_salesforce_uri(self):
         if CFG("AWS_EXECUTION_ENV", None) is None:
@@ -33,9 +31,7 @@ class AbstractStripeWebhookProcessor(ABC):
     def unhandled_event(self, payload):
        logger.info(f"Event not handled: {payload}")
 
+
     @abstractmethod
     def run(self):
         pass
-
-
-
