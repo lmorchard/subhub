@@ -69,5 +69,5 @@ class SubHubAccount:
         try:
             self.model.get(uid, consistent_read=True).delete()
             return True
-        except DoesNotExist as e:
+        except DoesNotExist:
             return False

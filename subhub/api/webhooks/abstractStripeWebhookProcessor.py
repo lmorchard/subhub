@@ -1,6 +1,10 @@
+import logging
+
 from abc import ABC, abstractmethod
 import requests
 
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 class AbstractStripeWebhookProcessor(ABC):
 
@@ -10,10 +14,10 @@ class AbstractStripeWebhookProcessor(ABC):
 
     def send_to_salesforce(self, payload):
         requests.post("", json=payload)
-        print("\n sending to salesforce : \n" + str(payload))
+        logger.info("\n sending to salesforce : \n" + str(payload))
 
     def unhandled_event(self, payload):
-       print(f"Event not handled: {payload}")
+       logger.info(f"Event not handled: {payload}")
 
     @abstractmethod
     def run(self):
