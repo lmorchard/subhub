@@ -3,6 +3,8 @@ import json
 import os
 from mockito import when, mock
 import requests
+from subhub.cfg import CFG
+from subhub.secrets import get_secret
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -55,7 +57,11 @@ def test_stripe_webhook_succeeded():
         'status_code': 200,
         'text': 'Ok'
     }, spec=requests.Response)
-    when(requests, strict=False).post("", json="sdfsdf").thenReturn(response)
+    data = '{"charge.amount": "2000", "charge.created": "1326853478", "charge.currency": "usd", ' \
+           '"invoice.charge.id": "evt_00000000000000", "charge.customer": "None", "charge.card.last4": "4444", "charge.card.brand": ' \
+           '"mastercard", "charge.card.exp_month": "8", "charge.card.exp_year": "2019", "invoice.id": "None", "charge.order.order_id": "6735", ' \
+           '"charge.balance_transaction.application_fee": "None"}'
+    when(requests).post(get_salesforce_uri(), json=data).thenReturn(response)
     runTest("charge.succeeded.json")
 
 
@@ -70,11 +76,22 @@ def test_stripe_webhook_badpayload():
         assert "this.will.break is not supported" == str(e)
 
 
-def runTest(fileName):
-    f = open(os.path.join(__location__, fileName));
+def get_salesforce_uri():
+    if CFG("AWS_EXECUTION_ENV", None) is None:
+        secret_values = CFG.SALESFORCE_URI
+    else:  # pragma: no cover
+        subhub_values = get_secret("dev/SUBHUB")
+        secret_values = subhub_values["salesforce_uri"]
+    return secret_values
+
+
+def runTest(file_name):
+    pipeline = stripeWebhookPipeline.StripeWebhookPipeline(read_json(file_name))
+    pipeline.run()
+
+
+def read_json(file_name):
+    f = open(os.path.join(__location__, file_name));
 
     with f:
-        data = json.load(f)
-
-    pipeline = stripeWebhookPipeline.StripeWebhookPipeline(data)
-    pipeline.run()
+        return json.load(f)
