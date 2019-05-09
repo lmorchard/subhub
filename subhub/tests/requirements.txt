@@ -1,6 +1,9 @@
 pytest
 pytest-cov
+Quart
+Hypercorn
 Flask
 gunicorn
 attrdict
 ruamel.yaml
+mockito

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import requests
 
 
 class AbstractStripeWebhookProcessor(ABC):
@@ -8,8 +9,8 @@ class AbstractStripeWebhookProcessor(ABC):
         self.payload = payload
 
     def send_to_salesforce(self, payload):
-        print("\n sending to salesforce : \n" +
-                           str(payload))
+        requests.post("", json=payload)
+        print("\n sending to salesforce : \n" + str(payload))
 
     def unhandled_event(self, payload):
        print(f"Event not handled: {payload}")
