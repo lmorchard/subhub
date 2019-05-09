@@ -1,7 +1,10 @@
 from subhub.api.webhooks import stripeWebhookPipeline
 import json
 import os
+from mockito import when, mock
+import requests
 
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 def test_stripe_webhook_charge_captured():
     runTest("charge.captured.json")
@@ -48,6 +51,11 @@ def test_stripe_webhook_refunded():
 
 
 def test_stripe_webhook_succeeded():
+    response = mock({
+        'status_code': 200,
+        'text': 'Ok'
+    }, spec=requests.Response)
+    when(requests, strict=False).post("", json="sdfsdf").thenReturn(response)
     runTest("charge.succeeded.json")
 
 
@@ -63,7 +71,6 @@ def test_stripe_webhook_badpayload():
 
 
 def runTest(fileName):
-    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     f = open(os.path.join(__location__, fileName));
 
     with f:
