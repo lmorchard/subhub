@@ -12,3 +12,6 @@ class AbstractRoute(ABC):
 
     def report_route(self, dataToLog):
         pass
+
+    def report_route_error(self, dataToLog):
+        pass
