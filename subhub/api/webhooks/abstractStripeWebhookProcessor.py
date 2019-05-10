@@ -31,7 +31,7 @@ class AbstractStripeWebhookProcessor(ABC):
         print("\n sending to salesforce : \n" + str(payload))
 
     def unhandled_event(self, payload):
-       logger.info(f"Event not handled: {payload}")
+       logging.info(f"Event not handled: {payload}")
 
     @abstractmethod
     def run(self):

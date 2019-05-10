@@ -9,7 +9,7 @@ from flask_cors import CORS
 from subhub.cfg import CFG
 from subhub.exceptions import SubHubError
 from subhub.secrets import get_secret
-from subhub.subhub_dynamodb import SubHubAccount
+from subhub.subhub_dynamodb import SubHubAccount, WebHookEvent
 
 
 def create_app(config=None):
@@ -34,10 +34,18 @@ def create_app(config=None):
         app.app.subhub_account = SubHubAccount(
             table_name=CFG.USER_TABLE, region=region, host=host
         )
+        app.app.webhook_table = WebHookEvent(
+            table_name=CFG.WEBHOOK_TABLE, region=region, host=host
+        )
     else:
         app.app.subhub_account = SubHubAccount(table_name=CFG.USER_TABLE, region=region)
+        app.app.webhook_table = WebHookEvent(table_name=CFG.WEBHOOK_TABLE, region=region)
     if not app.app.subhub_account.model.exists():
         app.app.subhub_account.model.create_table(
+            read_capacity_units=1, write_capacity_units=1, wait=True
+        )
+    if not app.app.webhook_table.model.exists():
+        app.app.webhook_table.model.create_table(
             read_capacity_units=1, write_capacity_units=1, wait=True
         )
 

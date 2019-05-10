@@ -17,25 +17,25 @@ def webhook_view() -> tuple:
         payload = request.data
         sig_header = request.headers['Stripe-Signature']
         endpoint_secret = get_webhook_values()
-        logger.info(f'sig header {sig_header}')
+        logging.info(f'sig header {sig_header}')
         event = stripe.Webhook.construct_event(
           payload, sig_header, endpoint_secret
         )
         p = StripeWebhookPipeline(event)
-        logger.info(f"webhok {p}")
+        logging.info(f"webhok {p}")
         p.run()
     except ValueError as e:
         # Invalid payload
-        logger.error(f"ValueError: {e}")
-        return HttpResponse(status=400)
+        logging.error(f"ValueError: {e}")
+        return Response(status=400)
     except stripe.error.SignatureVerificationError as e:
         # Invalid signature
-        logger.error(f"SignatureVerificationError {e}")
-        return HttpResponse(status=400)
+        logging.error(f"SignatureVerificationError {e}")
+        return Response(status=400)
     except Exception as e:
-        logger.error("Oops!",  e)
+        logging.error(f"Oops! {e}")
         return Response(e, status=500)
-    logger.info(f'event {event}')
+    logging.info(f'event {event}')
 
 
     return Response("Success", status=200)

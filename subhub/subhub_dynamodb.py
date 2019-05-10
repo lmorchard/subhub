@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 
-from pynamodb.attributes import UnicodeAttribute
+from pynamodb.attributes import UnicodeAttribute, ListAttribute
 from pynamodb.models import Model, DoesNotExist
 from pynamodb.exceptions import PutError
 
@@ -71,3 +71,55 @@ class SubHubAccount:
             return True
         except DoesNotExist:
             return False
+
+class WebHookEventModel(Model):
+    eventId = UnicodeAttribute(hash_key=True)
+    sent_system = ListAttribute()
+
+class WebHookEvent:
+    def __init__(self, table_name: str, region: str, host: Optional[str] = None):
+        _table = table_name
+        _region = region
+        _host = host
+
+        class WebHookEventModel(Model):
+            class Meta:
+                table_name = _table
+                region = _region
+                if _host:
+                    host = _host
+
+            eventId = UnicodeAttribute(hash_key=True)
+            sent_system = ListAttribute()
+
+        self.model = WebHookEventModel
+    
+    def new_event(self, event_id: str, system_sent: list) -> WebHookEventModel:
+        return self.model(eventId=event_id, sent_system=system_sent)
+    
+    def get_event(self, event_id: str) -> Optional[WebHookEventModel]:
+        try:
+            webhook_event = self.model.get(event_id, consistent_read=True)
+            return webhook_event
+        except DoesNotExist:
+            return None
+
+    @staticmethod
+    def save_event(webhook_event: WebHookEventModel) -> bool:
+        try:
+            webhook_event.save()
+            return True
+        except PutError:
+            return False
+
+    def append_event(self, event_id: str, to_system: str) -> bool:
+        try:
+            update_event = self.model.get(event_id, consistent_read=True)
+            if not to_system in update_event:
+                update_event.system_sent.append(to_system)
+                update_event.save()
+                return True
+            return False
+        except DoesNotExist:
+            return False
+

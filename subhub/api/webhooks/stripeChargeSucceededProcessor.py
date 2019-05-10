@@ -22,7 +22,8 @@ class StripeChargeSucceededProcessor(AbstractStripeWebhookProcessor):
         sfd["charge.card.exp_month"] = str(d["data"]["object"]["payment_method_details"]["card"]["exp_month"])
         sfd["charge.card.exp_year"] = str(d["data"]["object"]["payment_method_details"]["card"]["exp_year"])
         sfd["invoice.id"] = str(d["data"]["object"]["invoice"])
-        sfd["charge.order.order_id"] = str(d["data"]["object"]["metadata"]["order_id"])
+        order_id = d["data"]["object"]["metadata"].get("order_id")
+        sfd["charge.order.order_id"] = order_id
         #sfd["invoice.period_start"] = str(d["data"])
         #sfd["invoice.period_end"] = str(d["data"])
         sfd["charge.balance_transaction.application_fee"] = str(d["data"]["object"]["application_fee"])
