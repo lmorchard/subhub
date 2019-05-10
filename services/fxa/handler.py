@@ -7,7 +7,7 @@ import sys
 import awsgi
 from newrelic import agent
 
-from subhup import secrets
+from subhub import secrets
 agent.initialize()
 
 # First some funky path manipulation so that we can work properly in
