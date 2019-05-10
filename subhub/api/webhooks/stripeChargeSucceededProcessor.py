@@ -3,6 +3,8 @@ from subhub.api.webhooks.abstractStripeWebhookProcessor import AbstractStripeWeb
 import json
 import requests
 
+from subhub.api.webhooks.routes.staticRoutes import StaticRoutes
+
 
 class StripeChargeSucceededProcessor(AbstractStripeWebhookProcessor):
 
@@ -30,4 +32,5 @@ class StripeChargeSucceededProcessor(AbstractStripeWebhookProcessor):
         #sfd["charge.balance_transaction.net"] = str(d["data"])
         #sfd["charge.balance_transaction.exchange_rate"] = str(d["data"])
 
-        self.send_to_salesforce(json.dumps(sfd))
+        routes = [StaticRoutes.FIREFOX_ROUTE, StaticRoutes.SALESFORCE_ROUTE]
+        self.send_to_routes(routes, json.dumps(sfd))
