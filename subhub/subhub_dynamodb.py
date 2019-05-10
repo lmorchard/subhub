@@ -74,7 +74,7 @@ class SubHubAccount:
 
 class WebHookEventModel(Model):
     eventId = UnicodeAttribute(hash_key=True)
-    sent_system = ListAttribute()
+    sent_system = ListAttribute(default=list)
 
 class WebHookEvent:
     def __init__(self, table_name: str, region: str, host: Optional[str] = None):
@@ -94,8 +94,8 @@ class WebHookEvent:
 
         self.model = WebHookEventModel
     
-    def new_event(self, event_id: str, system_sent: list) -> WebHookEventModel:
-        return self.model(eventId=event_id, sent_system=system_sent)
+    def new_event(self, event_id: str, sent_system: list) -> WebHookEventModel:
+        return self.model(eventId=event_id, sent_system=[sent_system])
     
     def get_event(self, event_id: str) -> Optional[WebHookEventModel]:
         try:
@@ -112,14 +112,20 @@ class WebHookEvent:
         except PutError:
             return False
 
-    def append_event(self, event_id: str, to_system: str) -> bool:
+    def append_event(self, event_id: str, sent_system: str) -> bool:
         try:
             update_event = self.model.get(event_id, consistent_read=True)
-            if not to_system in update_event:
-                update_event.system_sent.append(to_system)
+            if not sent_system in update_event.sent_system:
+                update_event.sent_system.append(sent_system)
                 update_event.save()
                 return True
+        except DoesNotExist:
             return False
+    
+    def remove_from_db(self, event_id: str) -> bool:
+        try:
+            self.model.get(event_id, consistent_read=True).delete()
+            return True
         except DoesNotExist:
             return False
 

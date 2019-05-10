@@ -1,10 +1,16 @@
-from subhub.api.webhooks.abstractStripeWebhookProcessor import AbstractStripeWebhookProcessor
-
+import logging
 import json
 import requests
 
+from subhub.api.webhooks.abstractStripeWebhookProcessor import AbstractStripeWebhookProcessor
 from subhub.api.webhooks.routes.staticRoutes import StaticRoutes
 
+logger = logging.getLogger('charge_succeeded')
+log_handle = logging.StreamHandler()
+log_handle.setLevel(logging.INFO)
+logformat = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+log_handle.setFormatter(logformat)
+logger.addHandler(log_handle)
 
 class StripeChargeSucceededProcessor(AbstractStripeWebhookProcessor):
 
@@ -12,7 +18,7 @@ class StripeChargeSucceededProcessor(AbstractStripeWebhookProcessor):
         d = self.payload
 
         sfd = {}
-
+        sfd["event_id"] = d["id"]
         sfd["charge.amount"] = str(d["data"]["object"]["amount"])
         sfd["charge.created"] = str(d["created"])
         sfd["charge.currency"] = str(d["data"]["object"]["currency"])
@@ -32,5 +38,5 @@ class StripeChargeSucceededProcessor(AbstractStripeWebhookProcessor):
         #sfd["charge.balance_transaction.net"] = str(d["data"])
         #sfd["charge.balance_transaction.exchange_rate"] = str(d["data"])
 
-        routes = [StaticRoutes.FIREFOX_ROUTE, StaticRoutes.SALESFORCE_ROUTE]
+        routes = [StaticRoutes.SALESFORCE_ROUTE]  #setup not complete StaticRoutes.FIREFOX_ROUTE, 
         self.send_to_routes(routes, json.dumps(sfd))

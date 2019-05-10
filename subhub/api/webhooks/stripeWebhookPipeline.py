@@ -21,32 +21,32 @@ class StripeWebhookPipeline :
         self.payload = payload
 
     def run(self):
-        type = self.payload["type"]
-        if type == "charge.captured":
+        event_type = self.payload["type"]
+        if event_type == "charge.captured":
             StripeChargeCapturedProcessor(self.payload).run()
-        elif type == "charge.updated":
+        elif event_type == "charge.updated":
             StripeChargeUpdatedProcessor(self.payload).run()
-        elif type == "charge.succeeded":
+        elif event_type == "charge.succeeded":
             StripeChargeSucceededProcessor(self.payload).run()
-        elif type == "charge.refunded":
+        elif event_type == "charge.refunded":
             StripeChargeRefundedProcessor(self.payload).run()
-        elif type == "charge.refund.updated":
+        elif event_type == "charge.refund.updated":
             StripeChargeRefundUpdatedProcessor(self.payload).run()
-        elif type == "charge.pending":
+        elif event_type == "charge.pending":
             StripeChargePendingProcessor(self.payload).run()
-        elif type == "charge.failed":
+        elif event_type == "charge.failed":
             StripeChargeFailedProcessor(self.payload).run()
-        elif type == "charge.dispute.updated":
+        elif event_type == "charge.dispute.updated":
             StripeChargeDisputeUpdatedProcessor(self.payload).run()
-        elif type == "charge.dispute.funds_withdrawn":
+        elif event_type == "charge.dispute.funds_withdrawn":
             StripeChargeDisputeFundsWithdrawnProcessor(self.payload).run()
-        elif type == "charge.dispute.funds_reinstated":
+        elif event_type == "charge.dispute.funds_reinstated":
             StripeChargeDisputeFundsReinstatedProcessor(self.payload).run()
-        elif type == "charge.dispute.created":
+        elif event_type == "charge.dispute.created":
             StripeChargeDisputeCreatedProcessor(self.payload).run()
-        elif type == "charge.dispute.closed":
+        elif event_type == "charge.dispute.closed":
             StripeChargeDisputeClosedProcessor(self.payload).run()
-        elif type == "charge.expired":
+        elif event_type == "charge.expired":
             StripeChargeExpiredProcessor(self.payload).run()
         else:
             StripeUnhandledEvent(self.payload).run()
