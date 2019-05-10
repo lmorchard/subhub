@@ -5,6 +5,10 @@ import os
 import sys
 
 import awsgi
+from newrelic import agent
+
+from subhup import secrets
+agent.initialize()
 
 # First some funky path manipulation so that we can work properly in
 # the AWS environment
@@ -20,6 +24,7 @@ logger.setLevel(logging.INFO)
 # Create app at module scope to cache it for repeat requests
 try:
     app = create_app()
+    app = agent.WSGIApplicationWrapper(app)
 except Exception:  # pylint: disable=broad-except
     logger.exception("Exception occurred while loading app")
     # TODO: Add Sentry exception catch here
