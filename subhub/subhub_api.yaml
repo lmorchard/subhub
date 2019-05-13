@@ -51,7 +51,7 @@ parameters:
 paths:
   /webhooks:
     post:
-      operationId: subhub.api.webhooks.stripeWebhookController.webhook_view
+      operationId: subhub.api.webhooks.stripe_webhook_controller.webhook_view
       tags:
         - Webhooks
       summary: Receives webhook calls
