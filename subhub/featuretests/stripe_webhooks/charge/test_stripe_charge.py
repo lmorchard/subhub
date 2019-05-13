@@ -3,7 +3,7 @@ import requests
 import boto3
 import flask
 
-from subhub.featuretests.stripe_webhooks.utils import get_salesforce_uri, get_aws_region, runTest
+from subhub.featuretests.stripe_webhooks.utils import get_salesforce_uri, get_aws_region, runTest, MockSqsClient
 
 
 def test_stripe_webhook_succeeded(mocker):
@@ -33,8 +33,3 @@ def test_stripe_webhook_badpayload():
         runTest("charge/badpayload.json")
     except ValueError as e:
         assert "this.will.break is not supported" == str(e)
-
-
-class MockSqsClient:
-    def send_message(self, QueueUrl={},  MessageBody={}):
-        return "200"

@@ -43,3 +43,8 @@ def read_json(file_name):
 
     with f:
         return json.load(f)
+
+
+class MockSqsClient:
+    def send_message(self, QueueUrl={},  MessageBody={}):
+        return "200"
