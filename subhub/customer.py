@@ -2,6 +2,7 @@
 import stripe
 
 from subhub.exceptions import IntermittentError, ServerError
+from stripe.error import InvalidRequestError
 from subhub.subhub_dynamodb import SubHubAccount
 
 

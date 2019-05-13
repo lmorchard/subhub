@@ -314,6 +314,10 @@ definitions:
           type: string
           description: Subscription status
           example: active
+        cancel_at_period_end:
+          type: boolean
+          description: Shows if subscription will be cancelled at the end of the period.
+          example: true
   Errormessage:
     type: object
     properties:

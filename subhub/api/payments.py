@@ -81,7 +81,11 @@ def cancel_subscription(uid, sub_id) -> FlaskResponse:
             if "No such subscription:" in tocancel:
                 return {"message": "Invalid subscription."}, 404
             if tocancel["status"] in ["active", "trialing"]:
-                tocancel.delete()
+                try:
+                    stripe.Subscription.modify(sub_id,
+                                           cancel_at_period_end=True)
+                except InvalidRequestError as e:
+                    return {"message": e}, 400
                 return {"message": "Subscription cancellation successful"}, 201
             else:
                 return {"message": "Error cancelling subscription"}, 400
@@ -125,6 +129,7 @@ def create_return_data(subscriptions) -> JsonDict:
                 "plan_id": subscription["plan"]["id"],
                 "status": subscription["status"],
                 "subscription_id": subscription["id"],
+                "cancel_at_period_end": subscription["cancel_at_period_end"]
             }
         )
     return return_data
