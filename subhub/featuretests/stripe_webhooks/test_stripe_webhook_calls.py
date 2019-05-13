@@ -1,4 +1,4 @@
-from subhub.api.webhooks import stripeWebhookPipeline
+from subhub.api.webhooks import stripe_webhook_event_pipeline
 import json
 import os
 import mockito
@@ -122,7 +122,7 @@ def get_salesforce_uri():
 
 
 def runTest(file_name):
-    pipeline = stripeWebhookPipeline.StripeWebhookPipeline(read_json(file_name))
+    pipeline = stripe_webhook_event_pipeline.StripeWebhookPipeline(read_json(file_name))
     pipeline.run()
 
 
