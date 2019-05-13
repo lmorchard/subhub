@@ -19,7 +19,7 @@ class StripeChargeSucceededEvent(AbstractStripeWebhookEvent):
 
         sfd = {}
         sfd["event_id"] = d["id"]
-        sfd["event_type"] = "charge_succeeded"
+        sfd["event_type"] = d["type"]
         sfd["transaction_amount"] = d["data"]["object"]["amount"]
         sfd["created_date"] = d["created"]
         sfd["transaction_currency"] = d["data"]["object"]["currency"]

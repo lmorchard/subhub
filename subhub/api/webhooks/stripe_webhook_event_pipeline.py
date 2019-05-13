@@ -2,6 +2,8 @@ from subhub.api.webhooks.customer.stripe_customer_created_event import StripeCus
 from subhub.api.webhooks.charge.stripe_charge_succeeded_event import StripeChargeSucceededEvent
 from subhub.api.webhooks.customer.stripe_customer_deleted_event import StripeCustomerDeleted
 from subhub.api.webhooks.customer.stripe_customer_subscription_created_event import StripeCustomerSubscriptionCreated
+from subhub.api.webhooks.customer.stripe_customer_subscription_deleted_event import StripeCustomerSubscriptionDeleted
+from subhub.api.webhooks.customer.stripe_customer_subscription_updated_event import StripeCustomerSubscriptionUpdated
 from subhub.api.webhooks.customer.stripe_customer_updated_event import StripeCustomerUpdated
 from subhub.api.webhooks.stripe_unhandled_event import StripeUnhandledEvent
 
@@ -17,6 +19,10 @@ class StripeWebhookEventPipeline :
 
         if event_type == "customer.subscription.created":
             StripeCustomerSubscriptionCreated(self.payload).run()
+        elif event_type == "customer.subscription.updated":
+            StripeCustomerSubscriptionUpdated(self.payload).run()
+        elif event_type == "customer.subscription.deleted":
+            StripeCustomerSubscriptionDeleted(self.payload).run()
         elif event_type == "customer.created":
             StripeCustomerCreated(self.payload).run()
         elif event_type == "customer.updated":
