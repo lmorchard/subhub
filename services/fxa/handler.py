@@ -5,9 +5,9 @@ import os
 import sys
 
 import awsgi
-from newrelic import agent
 
 from subhub import secrets
+from newrelic import agent
 agent.initialize()
 
 # First some funky path manipulation so that we can work properly in
