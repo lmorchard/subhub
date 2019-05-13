@@ -7,7 +7,7 @@ logger.setLevel(logging.INFO)
 import boto3
 from botocore.exceptions import ClientError
 
-from subhub.api.webhooks.routes.abstractRoute import AbstractRoute
+from subhub.api.webhooks.routes.abstract_route import AbstractRoute
 
 class FirefoxRoute(AbstractRoute):
 

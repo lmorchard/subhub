@@ -1,4 +1,4 @@
-from subhub.api.webhooks import stripeWebhookPipeline
+from subhub.api.webhooks import stripe_webhook_event_pipeline
 import json
 import os
 import mockito
@@ -9,50 +9,6 @@ import boto3
 import flask
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-
-
-def test_stripe_webhook_charge_captured():
-    runTest("charge.captured.json")
-
-
-def test_stripe_webhook_charge_expired():
-    runTest("charge.expired.json")
-
-
-def test_stripe_webhook_disputeClosed():
-    runTest("charge.dispute.closed.json")
-
-
-def test_stripe_webhook_disputeCreated():
-    runTest("charge.dispute.created.json")
-
-
-def test_stripe_webhook_disputeFundsReinstated():
-    runTest("charge.dispute.funds_reinstated.json")
-
-
-def test_stripe_webhook_disputeFundsWithdrawn():
-    runTest("charge.dispute.funds_withdrawn.json")
-
-
-def test_stripe_webhook_disputeUpdated():
-    runTest("charge.dispute.updated.json")
-
-
-def test_stripe_webhook_failed():
-    runTest("charge.failed.json")
-
-
-def test_stripe_webhook_pending():
-    runTest("charge.pending.json")
-
-
-def test_stripe_webhook_refundUpdated():
-    runTest("charge.refund.updated.json")
-
-
-def test_stripe_webhook_refunded():
-    runTest("charge.refunded.json")
 
 
 def test_stripe_webhook_succeeded(mocker):
@@ -76,15 +32,10 @@ def test_stripe_webhook_succeeded(mocker):
     #run the test
     runTest("charge.succeeded.json")
 
-class MockG:
-    webhook_table = ""
 
 class MockSqsClient:
     def send_message(self, QueueUrl={},  MessageBody={}):
         return "200"
-
-def test_stripe_webhook_updated():
-    runTest("charge.updated.json")
 
 
 def test_stripe_webhook_badpayload():
@@ -122,7 +73,7 @@ def get_salesforce_uri():
 
 
 def runTest(file_name):
-    pipeline = stripeWebhookPipeline.StripeWebhookPipeline(read_json(file_name))
+    pipeline = stripe_webhook_event_pipeline.StripeWebhookEventPipeline(read_json(file_name))
     pipeline.run()
 
 

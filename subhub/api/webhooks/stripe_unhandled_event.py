@@ -1,7 +1,7 @@
-from subhub.api.webhooks.abstractStripeWebhookProcessor import AbstractStripeWebhookProcessor
+from subhub.api.webhooks.abstract_stripe_webhook_event import AbstractStripeWebhookEvent
 
 
-class StripeUnhandledEvent(AbstractStripeWebhookProcessor):
+class StripeUnhandledEvent(AbstractStripeWebhookEvent):
 
     def run(self):
         salesforce_payload = self.payload
