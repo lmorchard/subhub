@@ -1,11 +1,9 @@
-import json
 from flask import request, Response
-import sys
 import logging
 
 import stripe
 from subhub.auth_validation import get_webhook_values
-from subhub.api.webhooks.stripeWebhookPipeline import StripeWebhookPipeline
+from subhub.api.webhooks.stripe_webhook_event_pipeline import StripeWebhookEventPipeline
 
 
 logger = logging.getLogger('webhook_controller')
@@ -25,7 +23,7 @@ def webhook_view() -> tuple:
         event = stripe.Webhook.construct_event(
           payload, sig_header, endpoint_secret
         )
-        p = StripeWebhookPipeline(event)
+        p = StripeWebhookEventPipeline(event)
         logger.info(f"webhook {p}")
         p.run()
     except ValueError as e:

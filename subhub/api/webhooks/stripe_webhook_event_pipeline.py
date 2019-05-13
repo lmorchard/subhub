@@ -3,7 +3,7 @@ from subhub.api.webhooks.stripe_charge_succeeded import StripeChargeSucceeded
 from subhub.api.webhooks.stripe_unhandled_event import StripeUnhandledEvent
 
 
-class StripeWebhookPipeline :
+class StripeWebhookEventPipeline :
 
     def __init__(self, payload):
         assert isinstance(payload, object)

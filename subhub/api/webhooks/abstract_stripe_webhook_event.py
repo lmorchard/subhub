@@ -2,7 +2,7 @@ import logging
 from abc import ABC, abstractmethod
 
 import requests
-from subhub.api.webhooks.routes.routesPipeline import RoutesPipeline
+from subhub.api.webhooks.routes.routes_pipeline import RoutesPipeline
 from subhub.cfg import CFG
 from subhub.secrets import get_secret
 
@@ -14,7 +14,7 @@ log_handle.setFormatter(logformat)
 logger.addHandler(log_handle)
 
 
-class AbstractStripeWebhookProcessor(ABC):
+class AbstractStripeWebhookEvent(ABC):
 
     def __init__(self, payload):
         assert isinstance(payload, object)

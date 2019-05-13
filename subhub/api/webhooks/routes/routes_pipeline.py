@@ -1,6 +1,6 @@
-from subhub.api.webhooks.routes.firefoxRoute import FirefoxRoute
-from subhub.api.webhooks.routes.salesforceRoute import SalesforceRoute
-from subhub.api.webhooks.routes.staticRoutes import StaticRoutes
+from subhub.api.webhooks.routes.firefox_route import FirefoxRoute
+from subhub.api.webhooks.routes.salesforce_route import SalesforceRoute
+from subhub.api.webhooks.routes.static_routes import StaticRoutes
 
 
 class RoutesPipeline:
