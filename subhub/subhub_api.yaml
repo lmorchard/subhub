@@ -130,8 +130,6 @@ paths:
         - Subscriptions
       summary: List all Stripe Plans
       description: List all plans available from subscription provider
-      security:
-        - PayApiKey: []
       produces:
         - application/json
       responses:
