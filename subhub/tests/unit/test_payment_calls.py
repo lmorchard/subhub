@@ -136,6 +136,38 @@ def test_create_subscription_with_valid_data():
     g.subhub_account.remove_from_db("validcustomer")
 
 
+def test_subscribe_customer_existing(create_customer_for_processing):
+    """
+    GIVEN create a subscription
+    WHEN provided a customer and plan
+    THEN validate subscription is created
+    """
+    uid = uuid.uuid4()
+    subscription, code = payments.subscribe_to_plan(
+        "validcustomer",
+        {
+            "pmt_token": "tok_visa",
+            "plan_id": "plan_EtMcOlFMNWW4nd",
+            "email": "valid@{}customer.com".format(uid),
+            "orig_system": "Test_system",
+        },
+    )
+    subscription2, code2 = payments.subscribe_to_plan(
+        "validcustomer",
+        {
+            "pmt_token": "tok_visa",
+            "plan_id": "plan_EtMcOlFMNWW4nd",
+            "email": "valid@{}customer.com".format(uid),
+            "orig_system": "Test_system",
+        },
+    )
+    assert 409 == code2
+    payments.cancel_subscription(
+        "validcustomer", subscription["subscriptions"][0]["subscription_id"]
+    )
+    g.subhub_account.remove_from_db("validcustomer")
+
+
 def test_create_subscription_with_invalid_payment_token():
     """
     GIVEN should not create a subscription
@@ -201,6 +233,17 @@ def test_cancel_subscription_with_valid_data(app, create_subscription_for_proces
     assert cancelled["message"] == "Subscription cancellation successful"
     assert 201 == code
     g.subhub_account.remove_from_db("process_test")
+
+
+def test_cancel_subscription_with_invalid_data(app, create_subscription_for_processing):
+    (subscription, code) = create_subscription_for_processing
+    (cancelled, code) = payments.cancel_subscription(
+        "process_test", subscription["subscriptions"][0]["subscription_id"]+"a"
+    )
+    assert cancelled["message"] == "Subscription not available."
+    assert 400 == code
+    g.subhub_account.remove_from_db("process_test")
+
 
 
 def test_check_subscription_with_valid_parameters(

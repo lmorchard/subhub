@@ -46,6 +46,7 @@ def list_all_plans() -> FlaskListResponse:
     plans = stripe.Plan.list(limit=100)
     stripe_plans = []
     for p in plans:
+        product = stripe.Product.retrieve(p["product"])
         stripe_plans.append(
             {
                 "plan_id": p["id"],
@@ -53,7 +54,8 @@ def list_all_plans() -> FlaskListResponse:
                 "interval": p["interval"],
                 "amount": p["amount"],
                 "currency": p["currency"],
-                "nickname": p["nickname"],
+                "plan_name": p["nickname"],
+                "product_name": product["name"]
             }
         )
     return stripe_plans, 200
@@ -72,25 +74,21 @@ def cancel_subscription(uid, sub_id) -> FlaskResponse:
         return {"message": "Customer does not exist."}, 404
     customer = stripe.Customer.retrieve(subscription_user.custId)
     for item in customer["subscriptions"]["data"]:
-        if item["id"] == sub_id and item["status"] in ["active", "trialing"]:
+        if item["id"] == sub_id and item["status"] in ["active", "trialing"] and item["cancel_at_period_end"] == False:
             try:
                 tocancel = stripe.Subscription.retrieve(sub_id)
+                stripe.Subscription.modify(sub_id,
+                                           cancel_at_period_end=True)
+                return {"message": "Subscription cancellation successful"}, 201
             except InvalidRequestError as e:
                 # TODO handle other errors: APIConnectionError, APIError, AuthenticationError, CardError
                 return {"message": e}, 400
-            if "No such subscription:" in tocancel:
-                return {"message": "Invalid subscription."}, 404
-            if tocancel["status"] in ["active", "trialing"]:
-                try:
-                    stripe.Subscription.modify(sub_id,
-                                           cancel_at_period_end=True)
-                except InvalidRequestError as e:
-                    return {"message": e}, 400
-                return {"message": "Subscription cancellation successful"}, 201
-            else:
-                return {"message": "Error cancelling subscription"}, 400
     else:
         return {"message": "Subscription not available."}, 400
+
+
+def support_status(uid) -> FlaskResponse:
+    return subscription_status(uid)
 
 
 def subscription_status(uid) -> FlaskResponse:
@@ -105,7 +103,7 @@ def subscription_status(uid) -> FlaskResponse:
     subscriptions = stripe.Subscription.list(
         customer=items.custId, limit=100, status="all"
     )
-    if subscriptions is None:
+    if len(subscriptions) == 0:
         return {"message": "No subscriptions for this customer."}, 403
     return_data = create_return_data(subscriptions)
     return return_data, 201
