@@ -16,7 +16,7 @@ def create_app(config=None):
     if not CFG("AWS_EXECUTION_ENV", None):
         options = {"swagger_ui": True}
         region = "localhost"
-        host = "http://localhost:8000"
+        host = "http://localhost:8001"
         stripe.api_key = CFG.STRIPE_API_KEY
     else:
         options = {"swagger_ui": False}
@@ -86,6 +86,7 @@ def create_app(config=None):
     @app.app.before_request
     def before_request():
         g.subhub_account = current_app.subhub_account
+        g.webhook_table = current_app.webhook_table
         g.app_system_id = None
 
     CORS(app.app)
@@ -94,7 +95,7 @@ def create_app(config=None):
 
 if __name__ == "__main__":
     print("starting app")
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 5001))
     app = create_app()
     app.debug = True
     app.use_reloader = True

@@ -68,7 +68,7 @@ def test_stripe_webhook_succeeded():
     runTest("charge.succeeded.json")
 
 class MockSqsClient:
-    def send_message(QueueUrl={},  MessageBody={}):
+    def send_message(self, QueueUrl={},  MessageBody={}):
         return "200"
 
 def test_stripe_webhook_updated():

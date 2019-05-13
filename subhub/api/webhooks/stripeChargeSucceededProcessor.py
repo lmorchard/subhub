@@ -19,6 +19,7 @@ class StripeChargeSucceededProcessor(AbstractStripeWebhookProcessor):
 
         sfd = {}
         sfd["event_id"] = d["id"]
+        sfd["event_type"] = "charge_succeeded"
         sfd["charge.amount"] = str(d["data"]["object"]["amount"])
         sfd["charge.created"] = str(d["created"])
         sfd["charge.currency"] = str(d["data"]["object"]["currency"])

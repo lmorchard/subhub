@@ -45,7 +45,8 @@ class AbstractStripeWebhookProcessor(ABC):
 
     @staticmethod
     def unhandled_event(payload):
-        logger.info(f"Event not handled: {payload}")
+        logger.info(f"Event not handled: {payload['id']}")
+        pass
 
 
     @abstractmethod
