@@ -25,6 +25,7 @@ requirements = [
     'Werkzeug',
     'sh',
     'python-decouple',
+    'newrelic',
 ]
 
 setup_requirements = [
